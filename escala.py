@@ -56,12 +56,12 @@ def ler_escala(arquivo):
 		dias_mes = []
 		candidatos = []
 		arquivo_escala = open(arquivo, encoding='utf-8')
-		dados = arquivo_escala.readline().split("\t")[4:-1]
+		dados = arquivo_escala.readline().split("\t")[4:]
 		for dia in dados:
 			dia_escala = DiaEscala(int(dia.replace(" ","")[-2:]), [[],[],[],[]])
 			dias_mes.append(dia_escala)
 		for linha in arquivo_escala:
-			aux = linha.split("\t")[:-1]
+			aux = linha.split("\t")
 			cont, aux2 = analisar_turnos( dias_mes, aux[4:] )
 			c = Candidato(-1, aux[2], cont)
 			for d in dias_mes:
