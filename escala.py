@@ -12,6 +12,7 @@ import re
 import random
 
 TURNOS = 4			#Número de Turnos por dia
+INTERVAL_TURNOS = '24H' #24H | 48H
 
 dias_mes = []		#Lista de dias da escala
 candidatos = []		#Lista de candidatos à escala
@@ -56,7 +57,7 @@ def ler_escala(arquivo):
 		dias_mes = []
 		candidatos = []
 		arquivo_escala = open(arquivo, encoding='utf-8')
-		dados = arquivo_escala.readline().split("\t")[4:]
+		dados = arquivo_escala.readline().replace('\n', '').split("\t")[4:]
 		for dia in dados:
 			dia_escala = DiaEscala(int(dia.replace(" ","")[-2:]), [[],[],[],[]])
 			dias_mes.append(dia_escala)
@@ -137,10 +138,13 @@ def avaliar_solucao(solucao):
 
 
 def validar_candidato(candidato, indice, solucao):
-	#verifica se o candidato possui dois turnos no período de 48hrs
-	#dias = (-7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7)
-	#verifica se o candidato possui dois turnos no período de 24hrs
-	dias = (-3, -2, -1, 1, 2, 3)
+	interval = -1
+	if INTERVAL_TURNOS == '24H': interval = 3
+	elif INTERVAL_TURNOS == '48H': interval = 7
+	else:
+		raise AttributeError('Intervalo inválido. Espara-se: 24H|48H. Obteve: {}'.format(INTERVAL_TURNOS))
+	dias = list(range(-interval, interval))
+	del dias[interval]
 	for doff in dias:
 		aux_dia = indice + doff
 		if aux_dia >= 0 and aux_dia < len(solucao) and solucao[aux_dia] == candidato.id:
